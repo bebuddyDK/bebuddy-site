@@ -1,14 +1,11 @@
-// get/bebuddy_count.js
-// Counts a download (D1) and then navigates to the real asset.
-// Works with Cloudflare Pages Functions endpoint: /api/stats/hit
-// Usage: add data attributes on your links:
-// <a href="https://github.com/.../releases/tag/v2.0"
-//    data-dl="bebuddy_v2.0.zip"
-//    data-asset="https://github.com/.../releases/download/v2.0/bebuddy_v2.0.zip">Download</a>
-
+// /get/bebuddy_count.js
 (() => {
-  const SELECTOR = 'a[data-dl]';
-  const HIT_ENDPOINT = '/api/stats/hit'; // Same-origin endpoint that increments D1
+  const HIT_ENDPOINT = '/api/stats/hit';
+  const ATTR_FILE  = 'data-dl';
+  const ATTR_ASSET = 'data-asset';
+
+  function isDL(el) { return el && el.tagName === 'A' && el.hasAttribute(ATTR_FILE); }
+  function findAnchor(el) { while (el && el !== document) { if (isDL(el)) return el; el = el.parentNode; } return null; }
 
   function hitCounter(file, extra) {
     const payload = { file, event: 'download', ...extra };
@@ -18,8 +15,7 @@
         const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
         sent = navigator.sendBeacon(HIT_ENDPOINT, blob);
       }
-    } catch (_) {}
-
+    } catch {}
     if (!sent) {
       fetch(HIT_ENDPOINT, {
         method: 'POST',
@@ -29,37 +25,23 @@
         credentials: 'same-origin',
         cache: 'no-store',
       }).catch(() => {
-        const url = HIT_ENDPOINT + '?event=download&file=' + encodeURIComponent(file);
+        const url = `${HIT_ENDPOINT}?event=download&file=${encodeURIComponent(file)}`;
         fetch(url, { method: 'GET', keepalive: true }).catch(() => {});
       });
     }
   }
 
-  function onDownloadClick(e) {
-    const a = e.currentTarget;
-    const file = a.getAttribute('data-dl') || 'download.zip';
-    const asset = a.getAttribute('data-asset') || a.href;
+  function onClick(e) {
+    const a = findAnchor(e.target);
+    if (!a) return;
+    const file  = a.getAttribute(ATTR_FILE)  || 'download.zip';
+    const asset = a.getAttribute(ATTR_ASSET) || a.href;
 
-    // Count
-    hitCounter(file, {
-      path: location.pathname + location.search,
-      ref: document.referrer || '',
-    });
+    hitCounter(file, { path: location.pathname + location.search, ref: document.referrer || '' });
 
-    // Navigate to the actual asset (same tab)
     e.preventDefault();
     setTimeout(() => { window.location.href = asset; }, 40);
   }
 
-  function init() {
-    document.querySelectorAll(SELECTOR).forEach(a => {
-      a.addEventListener('click', onDownloadClick, { passive: false });
-    });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  document.addEventListener('click', onClick, { capture: true });
 })();
