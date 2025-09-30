@@ -1,21 +1,18 @@
 // get/bebuddy_count.js
-// Counts a download in your backend (D1) and then navigates to the real asset.
+// Counts a download (D1) and then navigates to the real asset.
+// Works with Cloudflare Pages Functions endpoint: /api/stats/hit
 // Usage: add data attributes on your links:
-//   <a href="https://github.com/.../releases/tag/v2.0"
-//      data-dl="bebuddy_v2.0.zip"
-//      data-asset="https://github.com/.../releases/download/v2.0/bebuddy_v2.0.zip">
-//      Download
-//   </a>
-// Include this script on your page: <script src="/get/bebuddy_count.js" defer></script>
+// <a href="https://github.com/.../releases/tag/v2.0"
+//    data-dl="bebuddy_v2.0.zip"
+//    data-asset="https://github.com/.../releases/download/v2.0/bebuddy_v2.0.zip">Download</a>
 
 (() => {
   const SELECTOR = 'a[data-dl]';
-  const HIT_ENDPOINT = '/api/stats/hit'; // Same origin endpoint that increments D1
+  const HIT_ENDPOINT = '/api/stats/hit'; // Same-origin endpoint that increments D1
 
   function hitCounter(file, extra) {
     const payload = { file, event: 'download', ...extra };
     let sent = false;
-
     try {
       if (navigator.sendBeacon) {
         const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
@@ -24,7 +21,6 @@
     } catch (_) {}
 
     if (!sent) {
-      // Fallback using keepalive fetch
       fetch(HIT_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -33,14 +29,8 @@
         credentials: 'same-origin',
         cache: 'no-store',
       }).catch(() => {
-        // Last-resort GET fallback if POST not supported server-side
         const url = HIT_ENDPOINT + '?event=download&file=' + encodeURIComponent(file);
-        fetch(url, {
-          method: 'GET',
-          keepalive: true,
-          credentials: 'same-origin',
-          cache: 'no-store',
-        }).catch(() => {});
+        fetch(url, { method: 'GET', keepalive: true }).catch(() => {});
       });
     }
   }
@@ -58,7 +48,6 @@
 
     // Navigate to the actual asset (same tab)
     e.preventDefault();
-    // Small delay gives sendBeacon time to flush
     setTimeout(() => { window.location.href = asset; }, 40);
   }
 
