@@ -1,9 +1,13 @@
 // /functions/get/bebuddy.js
-export async function onRequestGet({ env }) {
-  // Navn på "fil"/target i din D1 – skift gerne navnet, hvis du vil
-  const target = 'google_drive_folder';
+// Åbner Drive i en NY fane og sender den nuværende fane tilbage til forsiden.
+// NOTE: Den sikreste måde at styre "ny fane" er at sætte target="_blank" på <a>-tagget.
+// Denne server-side metode virker i de fleste browsere, men nogle popup-blokkere kan stoppe automatisk åbning.
+// Vi viser derfor også et fallback-link.
 
-  // Tilpas evt. tabel/kolonnenavne her, hvis din gamle tabel ikke hedder 'downloads'
+export async function onRequestGet({ env }) {
+  const target = 'google_drive_folder';
+  const driveUrl = 'https://drive.google.com/drive/folders/19YViyy-D3kVVO572zeP0-pJYm-1EKYx-?usp=sharing';
+
   const sql = `
     INSERT INTO downloads (file, count, last_at)
     VALUES (?1, 1, datetime('now'))
@@ -15,11 +19,29 @@ export async function onRequestGet({ env }) {
   try {
     await env.DB.prepare(sql).bind(target).run();
   } catch (e) {
-    // Vi logger, men lader stadig brugeren komme videre til Drive
+    // Logger fejl, men fortsætter
     console.error('DB error in /get/bebuddy:', e);
   }
 
-  // Redirect til din offentlige Google Drive-mappe
-  const driveUrl = 'https://drive.google.com/drive/folders/19YViyy-D3kVVO572zeP0-pJYm-1EKYx-?usp=sharing';
-  return Response.redirect(driveUrl, 302);
+  const html = `<!doctype html>
+<meta charset="utf-8">
+<title>Åbner download…</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body{font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; padding: 24px;}
+</style>
+<script>
+  (function(){
+    try { window.open(${JSON.stringify(driveUrl)}, '_blank', 'noopener'); } catch(e) {}
+    // Send den oprindelige fane tilbage til forsiden (kan ændres til en anden side hvis ønsket)
+    try { window.location.replace('/'); } catch(e) {}
+  })();
+</script>
+<p>Åbner download i en ny fane… Hvis intet sker, klik her:
+  <a href="${driveUrl}" target="_blank" rel="noopener">Åbn manuelt</a>.
+</p>`;
+
+  return new Response(html, {
+    headers: { 'content-type': 'text/html; charset=utf-8' }
+  });
 }
