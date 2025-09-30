@@ -37,8 +37,8 @@
     .cta{display:flex; gap:10px}
     .btn{appearance:none; border:none; border-radius:999px; padding:10px 16px; font-weight:600; cursor:pointer; transition:.2s transform, .2s box-shadow; box-shadow:var(--shadow)}
     .btn:focus{outline:3px solid var(--ring)}
-    .btn.primary{background:var(--accent); color:#fff}
-    .btn.secondary{background:var(--card); color:var(--text); border:1px solid #e5e7eb}
+    .btn.primary{background:var(--accent); color:#fff; text-decoration:none}
+    .btn.secondary{background:var(--card); color:var(--text); border:1px solid #e5e7eb; text-decoration:none}
     .btn:hover{transform:translateY(-1px)}
     section{scroll-margin-top:90px}
     .hero{padding:64px 0 40px}
@@ -91,7 +91,13 @@
       </nav>
       <div class="cta">
         <a class="btn secondary" href="#principper">Principper</a>
-        <a class="btn primary" href="/get/bebuddy">Download V2.0</a>
+        <!-- HREF = release-side (synlig), data-asset = direkte ZIP -->
+        <a
+          class="btn primary"
+          href="https://github.com/bebuddyDK/bebuddy-site/releases/tag/v2.0"
+          data-dl="bebuddy_v2.0.zip"
+          data-asset="https://github.com/bebuddyDK/bebuddy-site/releases/download/v2.0/bebuddy_v2.0.zip"
+        >Download V2.0</a>
       </div>
     </div>
   </header>
@@ -106,7 +112,12 @@
           <p class="lede">BeBuddy supplerer den eksisterende energirammeberegning i Be18 med statistik for at estimere et realistisk fremtidigt energiforbrug. Beregningen <strong>erstatter ikke</strong> energirammeberegningen, men giver indblik i usikkerheder og følsomheder.</p>
 
           <div class="cta" style="margin-top:18px">
-            <a class="btn primary" href="/get/bebuddy">Download V2.0</a>
+            <a
+              class="btn primary"
+              href="https://github.com/bebuddyDK/bebuddy-site/releases/tag/v2.0"
+              data-dl="bebuddy_v2.0.zip"
+              data-asset="https://github.com/bebuddyDK/bebuddy-site/releases/download/v2.0/bebuddy_v2.0.zip"
+            >Download V2.0</a>
             <a class="btn secondary" href="#saadan">Se hvordan</a>
           </div>
 
@@ -161,7 +172,11 @@
       <h2 id="how-title">Sådan gør du</h2>
       <p class="sub">Fire trin – og computeren klarer resten.</p>
       <div class="step-grid">
-        <div class="step"><div class="num">1</div><h3>Download</h3><p>Hent zip-mappen med BeBuddy. <a href="/get/bebuddy">Download her</a>.</p></div>
+        <div class="step"><div class="num">1</div><h3>Download</h3><p>Hent zip-mappen med BeBuddy. <a
+          href="https://github.com/bebuddyDK/bebuddy-site/releases/tag/v2.0"
+          data-dl="bebuddy_v2.0.zip"
+          data-asset="https://github.com/bebuddyDK/bebuddy-site/releases/download/v2.0/bebuddy_v2.0.zip"
+        >Download her</a>.</p></div>
         <div class="step"><div class="num">2</div><h3>Tilpas input</h3><p>Redigér inputfilen til dit behov – eller brug de vedlagte anbefalinger.</p></div>
         <div class="step"><div class="num">3</div><h3>Upload</h3><p>Vælg din Be18-fil, din inputfil og en arbejdsmappe til resultater.</p></div>
         <div class="step"><div class="num">4</div><h3>Kør analyse</h3><p>Start BeBuddy og lad den arbejde, til analysen er færdig.</p></div>
@@ -185,7 +200,12 @@
       <p>Teknisk dokumentation og matematiske principper (Latin Hypercube Sampling, OFAT, valg af distributionsformer m.m.)</p>
       <div class="cta" style="margin-top:10px">
         <a class="btn secondary" href="/docs/lhs.pdf" target="_blank" rel="noopener">Åbn LHS dokumentation (PDF)</a>
-        <a class="btn primary" href="/get/bebuddy">Hent BeBuddy V2.0</a>
+        <a
+          class="btn primary"
+          href="https://github.com/bebuddyDK/bebuddy-site/releases/tag/v2.0"
+          data-dl="bebuddy_v2.0.zip"
+          data-asset="https://github.com/bebuddyDK/bebuddy-site/releases/download/v2.0/bebuddy_v2.0.zip"
+        >Hent BeBuddy V2.0</a>
       </div>
     </section>
 
@@ -230,6 +250,8 @@
     })();
     </script>
 
+    <!-- tælle + direkte download -->
+    <script src="/get/bebuddy_count.js" defer></script>
   </main>
 
   <footer id="kontakt" aria-label="Sidefod">
