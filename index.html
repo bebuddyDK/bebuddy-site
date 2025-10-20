@@ -231,4 +231,116 @@
 
     <!-- PRINCIPLES / DOCS -->
     <section class="container" id="principper" aria-labelledby="docs-title" style="padding-bottom:60px">
-      <h2 id="
+      <h2 id="docs-title">Dokumentation og principper</h2>
+      <p>Teknisk dokumentation og matematiske principper (Latin Hypercube Sampling, OFAT, valg af distributionsformer m.m.)</p>
+      <div class="cta" style="margin-top:10px">
+        <a class="btn secondary" href="/docs/lhs.pdf" target="_blank" rel="noopener">Læs om beregningsprincipper</a>
+        <a
+          class="btn primary"
+          href="https://github.com/bebuddyDK/bebuddy-site/releases/download/v2.0/bebuddy_v2.0.zip"
+          data-dl="bebuddy_v2.0.zip"
+          data-asset="https://github.com/bebuddyDK/bebuddy-site/releases/download/v2.0/bebuddy_v2.0.zip"
+        >Download v2.0</a>
+      </div>
+    </section>
+
+    <!-- Admin (skjult) -->
+    <section id="admin-stats" class="container" hidden style="padding:20px 0">
+      <div class="card">
+        <h2 style="margin-top:0">Downloads (admin)</h2>
+        <p class="sub">Antal downloads af BeBuddy</p>
+        <div id="statsTable" style="overflow:auto"></div>
+      </div>
+    </section>
+
+    <script>
+    (function(){
+      const qs = new URLSearchParams(location.search);
+      const panel = document.getElementById('admin-stats');
+      function showPanel(){ panel.hidden = false; loadStats(); }
+      function loadStats(){
+        fetch('/api/stats').then(r => r.json()).then(({downloads=[]}) => {
+          const rows = downloads.map(d =>
+            `<tr>
+               <td>${d.file}</td>
+               <td style="text-align:center">${d.count}</td>
+               <td style="text-align:center">${d.last_at || ''}</td>
+             </tr>`).join('');
+          document.getElementById('statsTable').innerHTML =
+            `<table style="width:100%; border-collapse:collapse">
+              <thead><tr>
+                <th style="text-align:left; border-bottom:1px solid #e5e7eb">Fil</th>
+                <th style="text-align:center; border-bottom:1px solid #e5e7eb">Antal</th>
+                <th style="text-align:center; border-bottom:1px solid #e5e7eb">Seneste</th>
+              </tr></thead>
+              <tbody>${rows || '<tr><td colspan="3">Ingen data endnu.</td></tr>'}</tbody>
+            </table>`;
+        }).catch(()=>{
+          document.getElementById('statsTable').textContent='Kunne ikke hente stats.';
+        });
+      }
+      if(qs.has('admin')) showPanel();
+      document.addEventListener('keydown', (e)=>{
+        if(e.shiftKey && (e.key==='D' || e.key==='d')){
+          panel.hidden ? showPanel() : (panel.hidden = true);
+        }
+      });
+    })();
+    </script>
+
+    <!-- tælle + direkte download -->
+    <script src="/get/bebuddy_count.js" defer></script>
+  </main>
+
+  <footer id="kontakt" aria-label="Sidefod">
+    <div class="container footer-grid">
+      <div>
+        <strong>BeBuddy</strong>
+        <p class="small">Udviklet i forbindelse med et Masterprojekt på Aarhus Universitet i 2025 af Anne Juul Meldgaard og Esther Kerrn-Jespersen i samarbejde med Professor Steffen Petersen.</p>
+        <p class="small">Kontakt: <a href="mailto:kontakt.bebuddy@gmail.com">kontakt.bebuddy@gmail.com</a></p>
+      </div>
+      <div class="small" style="justify-self:end; text-align:right">
+        <p>© 2025 – Gratis version (v.2.0). Anvendes på eget ansvar.</p>
+        <p><a href="#top">Til toppen af siden ↑</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- POP-UP ELEMENT -->
+  <div id="weatherNotice"
+       class="bb-toast"
+       role="dialog"
+       aria-live="polite"
+       aria-label="Vigtig information"
+       hidden>
+    <button type="button"
+            class="bb-toast-close"
+            aria-label="Luk meddelelse">×</button>
+    <strong>BeBuddy featuren: Vejranalyse</strong>
+    Vejranalyse er under videre arbejde, og bør ikke anvendes for nu.
+  </div>
+
+  <!-- POP-UP SCRIPT -->
+  <script>
+  (function(){
+    const KEY = 'bb-weather-notice-dismissed-v1';
+    const el = document.getElementById('weatherNotice');
+    if(!el) return;
+
+    if(!localStorage.getItem(KEY)){
+      el.hidden = false;
+      requestAnimationFrame(()=> el.classList.add('show'));
+    } else {
+      el.hidden = true;
+    }
+
+    const btn = el.querySelector('.bb-toast-close');
+    btn?.addEventListener('click', ()=>{
+      el.classList.remove('show');
+      setTimeout(()=> el.hidden = true, 200);
+      localStorage.setItem(KEY, '1');
+    });
+  })();
+  </script>
+</body>
+</html>
