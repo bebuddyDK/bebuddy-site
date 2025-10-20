@@ -138,107 +138,97 @@
   </header>
 
   <main>
-    <!-- ... (alt indhold som før) ... -->
-    <!-- Jeg springer over mellemsektionerne for korthed, men de er uændrede -->
-    <!-- HOW IT WORKS, FEATURES, BENEFITS, osv. -->
+    <!-- HERO -->
+    <section class="hero" id="top">
+      <div class="container grid">
+        <div>
+          <span class="kicker">Analyseværktøj til Be18</span>
+          <h1>BeBuddy – statistik til energirammeberegninger</h1>
+          <p class="lede">BeBuddy supplerer den eksisterende energirammeberegning i Be18 med statistik for at estimere et realistisk fremtidigt energiforbrug. Beregningen <strong>erstatter ikke</strong> energirammeberegningen, men giver indblik i usikkerheder og følsomheder.</p>
 
-    <!-- Admin (skjult) -->
-    <section id="admin-stats" class="container" hidden style="padding:20px 0">
-      <div class="card">
-        <h2 style="margin-top:0">Downloads (admin)</h2>
-        <p class="sub">Antal downloads af BeBuddy</p>
-        <div id="statsTable" style="overflow:auto"></div>
+          <div class="cta" style="margin-top:18px">
+            <a
+              class="btn primary"
+              href="https://github.com/bebuddyDK/bebuddy-site/releases/download/v2.0/bebuddy_v2.0.zip"
+              data-dl="bebuddy_v2.0.zip"
+              data-asset="https://github.com/bebuddyDK/bebuddy-site/releases/download/v2.0/bebuddy_v2.0.zip"
+            >Download v2.0</a>
+            <a class="btn secondary" href="#saadan">Se hvordan</a>
+          </div>
+
+          <p class="disclaimer" style="margin-top:14px; max-width:510px;">
+            BeBuddy er udviklet til kontorbyggeri iht. standardværdier jf. Be18. Det er dog muligt at anvende programmet i et mindre omfang til bygninger af anden type. Se hvordan i brugervejledningen og anbefalinger i den downloadet zip-mappe.
+          </p>
+          <p class="disclaimer" style="margin-top:14px"><strong>Programmet er gratis og anvendes under eget ansvar.</strong>
+          </p>
+        </div>
+
+        <aside class="hero-card" aria-label="Hurtigt overblik">
+          <h3 style="margin-top:0">Hvad får du?</h3>
+          <ul>
+            <li>Et revideret beslutningsgrundlag, der går ud over standardantagelser.</li>
+            <li>Pålidelige statistiske resultater – estimater for fremtidigt energiforbrug.</li>
+            <li>Mulighed for at påvirke inputparametre, så modellen passer til projektet.</li>
+            <li>En slutrapport med visualiseringer samt alle samplede resultater i CSV-filer.</li>
+          </ul>
+        </aside>
       </div>
     </section>
 
-    <script>
-    (function(){
-      const qs = new URLSearchParams(location.search);
-      const panel = document.getElementById('admin-stats');
-      function showPanel(){ panel.hidden = false; loadStats(); }
-      function loadStats(){
-        fetch('/api/stats').then(r => r.json()).then(({downloads=[]}) => {
-          const rows = downloads.map(d =>
-            `<tr>
-               <td>${d.file}</td>
-               <td style="text-align:center">${d.count}</td>
-               <td style="text-align:center">${d.last_at || ''}</td>
-             </tr>`).join('');
-          document.getElementById('statsTable').innerHTML =
-            `<table style="width:100%; border-collapse:collapse">
-              <thead><tr>
-                <th style="text-align:left; border-bottom:1px solid #e5e7eb">Fil</th>
-                <th style="text-align:center; border-bottom:1px solid #e5e7eb">Antal</th>
-                <th style="text-align:center; border-bottom:1px solid #e5e7eb">Seneste</th>
-              </tr></thead>
-              <tbody>${rows || '<tr><td colspan="3">Ingen data endnu.</td></tr>'}</tbody>
-            </table>`;
-        }).catch(()=>{
-          document.getElementById('statsTable').textContent='Kunne ikke hente stats.';
-        });
-      }
-      if(qs.has('admin')) showPanel();
-      document.addEventListener('keydown', (e)=>{
-        if(e.shiftKey && (e.key==='D' || e.key==='d')){
-          panel.hidden ? showPanel() : (panel.hidden = true);
-        }
-      });
-    })();
-    </script>
+    <!-- FEATURES -->
+    <section class="features container" id="funktioner" aria-labelledby="features-title">
+      <h2 id="features-title">To centrale funktioner</h2>
+      <p class="sub">BeBuddy tilbyder både usikkerhedskvantificering og følsomhedsanalyse.</p>
 
-    <!-- tælle + direkte download -->
-    <script src="/get/bebuddy_count.js" defer></script>
-  </main>
+      <div class="cards">
+        <article class="card">
+          <div class="badge" aria-label="Metode">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="20" x2="6" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="18" y1="20" x2="18" y2="14"></line></svg>
+            Parameter-variation (LHS)
+          </div>
+          <h3>Usikkerhed i energirammen</h3>
+          <p>Latin Hypercube Sampling belyser usikkerheden ved energirammeberegningen ved at variere de 23 mest sensitive parametre. Metoden giver et pålideligt estimat af resultatspændet på tværs af inputparametre.</p>
+          <p class="small">Læs om den anvendte matematik <a href="/docs/lhs.pdf" target="_blank" rel="noopener">her</a>.</p>
+        </article>
 
-  <footer id="kontakt" aria-label="Sidefod">
-    <div class="container footer-grid">
-      <div>
-        <strong>BeBuddy</strong>
-        <p class="small">Udviklet i forbindelse med et Masterprojekt på Aarhus Universitet i 2025 af Anne Juul Meldgaard og Esther Kerrn-Jespersen i samarbejde med Professor Steffen Petersen.</p>
-        <p class="small">Kontakt: <a href="mailto:kontakt.bebuddy@gmail.com">kontakt.bebuddy@gmail.com</a></p>
+        <article class="card">
+          <div class="badge" aria-label="Metode">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="21" x2="20" y2="21"></line><line x1="4" y1="14" x2="14" y2="14"></line><line x1="4" y1="7" x2="10" y2="7"></line><circle cx="18" cy="14" r="2"></circle><circle cx="12" cy="7" r="2"></circle></svg>
+            Sensitivitetsanalyse (OFAT)
+          </div>
+          <h3>Påvirkning af klima</h3>
+          <p>One-Factor-at-a-Time udskifter klimadata til energirammeberegningen og belyser variationen af energibehovet i relation til omskiftlig klimadata.</p>
+        </article>
       </div>
-      <div class="small" style="justify-self:end; text-align:right">
-        <p>© 2025 – Gratis version (v.2.0). Anvendes på eget ansvar.</p>
-        <p><a href="#top">Til toppen af siden ↑</a></p>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="steps container" id="saadan" aria-labelledby="how-title">
+      <h2 id="how-title">Sådan gør du</h2>
+      <p class="sub">Fire trin – og computeren klarer resten.</p>
+      <div class="step-grid">
+        <div class="step"><div class="num">1</div><h3>Download</h3><p>Hent zip-mappen med BeBuddy. <a
+          href="https://github.com/bebuddyDK/bebuddy-site/releases/download/v2.0/bebuddy_v2.0.zip"
+          data-dl="bebuddy_v2.0.zip"
+          data-asset="https://github.com/bebuddyDK/bebuddy-site/releases/download/v2.0/bebuddy_v2.0.zip"
+        >Download v2.0 her</a>.</p></div>
+        <div class="step"><div class="num">2</div><h3>Tilpas input</h3><p>Redigér inputfilen til dit behov – eller brug de vedlagte anbefalinger.</p></div>
+        <div class="step"><div class="num">3</div><h3>Upload</h3><p>Vælg din Be18-fil, din inputfil og en arbejdsmappe til resultater.</p></div>
+        <div class="step"><div class="num">4</div><h3>Kør analyse</h3><p>Start BeBuddy og lad den arbejde, til analysen er færdig.</p></div>
       </div>
-    </div>
-  </footer>
+    </section>
 
-  <!-- POP-UP ELEMENT -->
-  <div id="weatherNotice"
-       class="bb-toast"
-       role="dialog"
-       aria-live="polite"
-       aria-label="Vigtig information"
-       hidden>
-    <button type="button"
-            class="bb-toast-close"
-            aria-label="Luk meddelelse">×</button>
-    <strong>BeBuddy featuren: Vejranalyse</strong>
-    Vejranalyse er under videre arbejde, og bør ikke anvendes for nu.
-  </div>
+    <!-- BENEFITS / VALUE -->
+    <section class="benefits container" id="fordele" aria-labelledby="value-title">
+      <h2 id="value-title">Hvorfor bruge BeBuddy?</h2>
+      <div class="benefit-grid">
+        <div class="benefit"><div class="tick" aria-hidden="true">✓</div><div><strong>Bedre beslutningsgrundlag.</strong><br />Kom væk fra faste standardantagelser og få et realistisk spænd på resultaterne.</div></div>
+        <div class="benefit"><div class="tick" aria-hidden="true">✓</div><div><strong>Statistisk dokumentation.</strong><br />Resultater leveres med fordelingsgrafer, nøgletal og CSV-filer.</div></div>
+        <div class="benefit"><div class="tick" aria-hidden="true">✓</div><div><strong>Transparent model.</strong><br />Vælg og vægt inputparametre så de matcher projektet.</div></div>
+        <div class="benefit"><div class="tick" aria-hidden="true">✓</div><div><strong>Klar rapport.</strong><br />Automatisk genereret slutrapport til deling og arkiv.</div></div>
+      </div>
+    </section>
 
-  <!-- POP-UP SCRIPT -->
-  <script>
-  (function(){
-    const KEY = 'bb-weather-notice-dismissed-v1';
-    const el = document.getElementById('weatherNotice');
-    if(!el) return;
-
-    if(!localStorage.getItem(KEY)){
-      el.hidden = false;
-      requestAnimationFrame(()=> el.classList.add('show'));
-    } else {
-      el.hidden = true;
-    }
-
-    const btn = el.querySelector('.bb-toast-close');
-    btn?.addEventListener('click', ()=>{
-      el.classList.remove('show');
-      setTimeout(()=> el.hidden = true, 200);
-      localStorage.setItem(KEY, '1');
-    });
-  })();
-  </script>
-</body>
-</html>
+    <!-- PRINCIPLES / DOCS -->
+    <section class="container" id="principper" aria-labelledby="docs-title" style="padding-bottom:60px">
+      <h2 id="
