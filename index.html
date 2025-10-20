@@ -323,24 +323,29 @@
   <!-- POP-UP SCRIPT -->
   <script>
   (function(){
-    const KEY = 'bb-weather-notice-dismissed-v1';
     const el = document.getElementById('weatherNotice');
     if(!el) return;
-
-    if(!localStorage.getItem(KEY)){
-      el.hidden = false;
-      requestAnimationFrame(()=> el.classList.add('show'));
-    } else {
+  
+    // Kun vis hvis man er på bebuddy.dk (eller www.bebuddy.dk)
+    const host = location.hostname;
+    const allowedHosts = ['bebuddy.dk', 'www.bebuddy.dk'];
+    if(!allowedHosts.includes(host)){
       el.hidden = true;
+      return;
     }
-
+  
+    // Vis hver gang siden indlæses
+    el.hidden = false;
+    requestAnimationFrame(()=> el.classList.add('show'));
+  
+    // Luk ved klik på kryds
     const btn = el.querySelector('.bb-toast-close');
     btn?.addEventListener('click', ()=>{
       el.classList.remove('show');
       setTimeout(()=> el.hidden = true, 200);
-      localStorage.setItem(KEY, '1');
     });
   })();
   </script>
+
 </body>
 </html>
